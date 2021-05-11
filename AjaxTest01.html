@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AjaxTest01.html</title>
+<script type="text/javascript">
+
+	function loadXMLDocs()
+	{
+		// XMLHttpRequest 객체를 담을 수 있는 변수 선언 → AJAX 객체
+		var xmlHttp;
+		
+		// (클라이언트측) 브라우저에 따른 분기
+		// (클라이언트 측에서) 자신의 브라우저가 XMLHttpRequest 를 지원하고 있는 상황이라면
+		if(window.XMLHttpRequest) // window. -> 브라우저 객체 모델 Browser Object Model (BOM) 의미
+		{
+			//alert("XMLHttpRequest 지원");
+			
+			// 이와 같은 방법으로 객체를 생성하고
+			xmlHttp = new XMLHttpRequest();
+		}
+		// (클라이언트 측에서) 자신의 브라우저가 XMLHttpRequest를 지원하지 않는다면
+		else
+		{
+			//alert("XMLHttpRequest 지원 안함");
+			
+			// 이런 방법으로 객체를 생성해라.
+			xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		
+		// ※ 객체를 생성하는 방법의 차이만 있을 뿐
+		//    여기까지 수행하면 XMLHttpRequest 객체 생성 완료
+		
+		// 'xmlHttp' : XMLHttpRequest 객체
+		// 서버로부터 응답이 오면 'readystatechange' 이벤트가 발생하게 된다.
+		
+		// onreadystatechange: readystatechange라는 이벤트가 발생하면 ~ 처리해라.
+		xmlHttp.onreadystatechange = function()
+		{
+			// 응답이 올 때마다
+			// readyState 란 값이 그 상황에서의 XMLHttpRequest 상태를 저장하게 된다.
+			// 즉, readyState는 XMLHttpRequest 객체의 property 이다.
+			// ==> readystatechange 이벤트는
+			//     readyState값이 변경될 때마다 발생한다.
+			
+			// ※ 'XMLHttpRequest'의 'readyState'는 0에서 4까지 순차적으로 변화한다.
+			//    0 → 요청이 초기화되지 않음
+			//    1 → 서버 연결이 이루어지지 않음
+			//    2 → 요청이 수신됨
+			//    3 → 요청을 처리중
+			//    4 → 요청의 처리가 종료되고, 응답이 준비됨
+			
+			// ※ 'XMLHttpRequest'의 'status' 는 HTTP에서 보내주는 Status 코드를 의미한다.
+			//    200 을 받았다. → 올바른 응답
+			//    400 번대를 받았다. → 클라이언트 측 에러
+			//    500 번대를 받았다. → 서버측 에러
+			
+			// 서버로부터 응답을 받았고, 그 응답이 올바른 응답이라면
+			if(xmlHttp.readyState ==4 && xmlHttp.status == 200)
+			{
+				// 이 구문을 통해 서버로부터 응답을 가져와 DOM을 업데이트 하겠다는 의미
+				// 응답에는 두 가지 속성이 있는데
+				// 'responseText'는 텍스트 형식의 응답일 경우 사용하게 되고
+				// 'responseXML'은 응답이 XML 형식일 경우 사용하게 된다.
+				document.getElementById("myDiv").innerHTML = xmlHttp.responseText;
+			}
+		}
+		
+		// 환경 구성
+		// 'XMLHttpRequest'의 'open("페이지 요청 방식", "URL", async -> 비동기 방식 처리하면 true, 동기방식으로 처리하면 false)'는
+		// XMLHttpRequest 객체를 필요한 값으로 초기화하는 데 사용하는 메소드이다.
+		// GET 방식이 아닌 POST 방식으로 요청하기 위해서는
+		// 'xmlHttp.setRequestHeader("Content-type", "application/x-ww-form-urlencoded");
+		// xmlHttp.send(input1=value1&input2=value2);''
+		// 와 같이 헤더를 추가해 주어야 한다.
+		xmlHttp.open("GET", "ajaxTarget.txt", true);
+		// 액션 수행
+		xmlHttp.send("");
+	}
+
+</script>
+
+
+</head>
+<body>
+
+<div id="myDiv">
+	<h1>AJAX를 활용하여 이 텍스트를 바꾸어보자.</h1>
+</div>
+
+<button type="button" onclick="loadXMLDocs()">Content 바꾸기</button>
+
+</body>
+</html>
